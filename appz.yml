@@ -13,6 +13,9 @@ deploy:
     context: mpmathew/DEV
     replicas: 1
     type: statefulset
+    ingress: nodeport
+    port:
+    - 8080
     
 volumes:
   - claim: airflow-home
@@ -53,4 +56,4 @@ properties:
     AIRFLOW__API__ACCESS_CONTROL_ALLOW_HEADERS: origin,content-type,accept
     AIRFLOW__API__ACCESS_CONTROL_ALLOW_METHODS: POST,GET
     AIRFLOW__WEBSERVER__BASE_URL: http://testurl
-    revision : 05
+    revision : 01
