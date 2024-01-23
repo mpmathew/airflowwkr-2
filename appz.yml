@@ -1,0 +1,56 @@
+app:
+    name: Airflowwkr
+    code: Airflowwkr
+    notify: mpmathew@ecloudcontrol.com
+build:
+    version: 2.0
+    env: DEV
+    build_file: none
+    output_files: output/*.zip
+    image_template: airflowwkr-2.0
+    
+deploy:
+    context: mpmathew/DEV
+    replicas: 1
+    type: statefulset
+    
+volumes:
+  - claim: airflow-home
+    mount: /appz/home/airflow
+    name: data
+    size: 10Gi
+    mode: ReadWriteMany
+    matchLabels: false
+    
+properties:
+    TZ: UTC
+    AIRFLOW__CORE__LOAD_EXAMPLES: False
+    AIRFLOW__CORE__EXECUTOR: CeleryExecutor
+    AIRFLOW_ADMIN_USERNAME: admin
+    AIRFLOW_ADMIN_EMAIL: mpmathew@ecloudcontrol.com
+    AIRFLOW_ADMIN_FIRSTNAME: Test
+    AIRFLOW_ADMIN_LASTNAME: Admin
+    AIRFLOW_ADMIN_PASSWORD:
+      vault: AIRFLOW_ADMIN_PASSWORD_VALUE
+    AIRFLOW_POSTGRES_USER: airflow
+    AIRFLOW_POSTGRES_PASSWORD:
+      vault: AIRFLOW_POSTGRES_PASSWORD_VALUE
+    AIRFLOW_POSTGRES_DB: airflow
+    AIRFLOW__DATABASE__SQL_ALCHEMY_CONN: postgresql+psycopg2://${AIRFLOW_POSTGRES_USER}:${AIRFLOW_POSTGRES_PASSWORD}@postgres13-master-13-x:5432/${AIRFLOW_POSTGRES_DB}
+    AIRFLOW__CELERY__RESULT_BACKEND: db+postgresql://${AIRFLOW_POSTGRES_USER}:${AIRFLOW_POSTGRES_PASSWORD}@postgres13-master-13-x:5432/${AIRFLOW_POSTGRES_DB}
+    AIRFLOW__CELERY__BROKER_URL: redis://redis-6-6-2:6379/0
+    AIRFLOW__CORE__TEST_CONNECTION: Enabled
+    AIRFLOW__CORE__DAGBAG_IMPORT_TIMEOUT: 180
+    AIRFLOW__CORE__DAG_FILE_PROCESSOR_TIMEOUT: 240
+    AIRFLOW__CORE__PARALLELISM: 16
+    AIRFLOW__CORE__MAX_ACTIVE_TASKS_PER_DAG: 8
+    AIRFLOW__CORE__MAX_ACTIVE_RUNS_PER_DAG: 1
+    AIRFLOW__SCHEDULER__MIN_FILE_PROCESS_INTERVAL: 60
+    AIRFLOW__SCHEDULER__DAG_DIR_LIST_INTERVAL: 180
+    AIRFLOW__SCHEDULER__MAX_TIS_PER_QUERY: 8
+    AIRFLOW__CELERY__WORKER_CONCURRENCY: 8
+    AIRFLOW__API__AUTH_BACKENDS: airflow.api.auth.backend.session,airflow.api.auth.backend.basic_auth
+    AIRFLOW__API__ACCESS_CONTROL_ALLOW_HEADERS: origin,content-type,accept
+    AIRFLOW__API__ACCESS_CONTROL_ALLOW_METHODS: POST,GET
+    AIRFLOW__WEBSERVER__BASE_URL: http://testurl
+    revision : 05
