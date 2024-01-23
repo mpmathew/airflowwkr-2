@@ -56,4 +56,4 @@ properties:
     AIRFLOW__API__ACCESS_CONTROL_ALLOW_HEADERS: origin,content-type,accept
     AIRFLOW__API__ACCESS_CONTROL_ALLOW_METHODS: POST,GET
     AIRFLOW__WEBSERVER__BASE_URL: http://testurl
-    revision : 01
+    revision : 02
